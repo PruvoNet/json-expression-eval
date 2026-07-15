@@ -1,4 +1,4 @@
-/* eslint-disable prefer-const */
+/* eslint-disable prefer-const, no-useless-assignment */
 import { ExpressionParts } from '../../types';
 import { Compute } from '../../types/utils';
 
