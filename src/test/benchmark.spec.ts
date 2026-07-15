@@ -38,6 +38,8 @@ describe('type instantiation benchmark', () => {
         } catch (err) {
             const e = err as { stdout?: string; stderr?: string };
             const combined = `${e.stdout ?? ''}${e.stderr ?? ''}`;
+            // The tsc stdout/stderr is the useful diagnostic here, not the raw exec error.
+            // eslint-disable-next-line preserve-caught-error
             throw new Error(`tsc failed to compile the benchmark fixture:\n${combined}`);
         }
 
