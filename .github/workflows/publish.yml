@@ -48,6 +48,9 @@ jobs:
           pnpm install
           pnpm build
 
+      - name: Ensure npm supports trusted publishing (OIDC)
+        run: npm install -g npm@latest
+
       - name: Publish
         run: |
           npm publish
