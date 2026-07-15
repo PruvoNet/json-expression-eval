@@ -1,4 +1,7 @@
-import { RuleFunctionsTable, Rule, FunctionsTable, Context, ResolvedConsequence, ValidationContext } from '../types';
+import {
+    RuleFunctionsTable, Rule, FunctionsTable, Context, ResolvedConsequence,
+    ValidationContext, RuleDefinition
+} from '../types';
 import { evaluate, validate } from './evaluator';
 import { objectKeys } from './helpers';
 import { isRuleFunction } from './typeGuards';
@@ -45,22 +48,27 @@ async function run<ConsequencePayload, C extends Context,
                 }
             }
         } else {
-            if (!rule.condition) {
+            // Type assertion needed because TypeScript can't narrow RequireOnlyOne union types
+            const ruleDefinition = rule as RuleDefinition<ConsequencePayload, C, F, Ignore,
+                CustomEngineRuleFuncRunOptions>;
+            if (!ruleDefinition.condition) {
                 throw new Error(`Missing condition for rule`);
             }
-            if (!rule.consequence) {
+            if (!ruleDefinition.consequence) {
                 throw new Error(`Missing consequence for rule`);
             }
             if (validation) {
-                await validate<C, F, Ignore, CustomEngineRuleFuncRunOptions>(rule.condition,
+                await validate<C, F, Ignore, CustomEngineRuleFuncRunOptions>(ruleDefinition.condition,
                     context as ValidationContext<C, Ignore>, functionsTable, runOptions);
-                await evaluateEngineConsequence<ConsequencePayload, C, Ignore>(context as C, rule.consequence);
+                await evaluateEngineConsequence<ConsequencePayload, C, Ignore>(
+                    context as C, ruleDefinition.consequence);
             } else {
                 const ruleApplies = await evaluate<C, F, Ignore, CustomEngineRuleFuncRunOptions>(
-                    rule.condition, context as C, functionsTable, runOptions);
+                    ruleDefinition.condition, context as C, functionsTable, runOptions);
                 if (ruleApplies) {
                     const consequence =
-                        await evaluateEngineConsequence<ConsequencePayload, C, Ignore>(context as C, rule.consequence);
+                        await evaluateEngineConsequence<ConsequencePayload, C, Ignore>(context as C,
+                            ruleDefinition.consequence);
                     errors.push(consequence);
                     if (haltOnFirstMatch) {
                         return errors;

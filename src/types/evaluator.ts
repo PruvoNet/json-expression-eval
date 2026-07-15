@@ -1,19 +1,19 @@
-import { Object, String, Union } from 'ts-toolbelt';
+import { Join, Path, RequireOnlyOne, Split } from './utils';
 import { Paths } from './paths';
-import { NonNullable } from './required';
+import { NonNullable as NonNullableDeep } from './required';
 
 export type FuncCompareOp<C extends Context, F extends FunctionsTable<C, CustomEvaluatorFuncRunOptions>,
     K extends keyof F, CustomEvaluatorFuncRunOptions> =
     Awaited<Parameters<F[K]>[0]>;
 
 export type StringPaths<O extends object, Ignore> = any extends O ?
-    never : (any extends Ignore ? never : String.Join<Paths<O, [], Ignore | any[], string>, '.'>);
+    never : (any extends Ignore ? never : Join<Paths<O, [], Ignore | any[], string>, '.'>);
 
 export type Primitive = string | number | boolean;
 
 export type PropertyPathsOfType<C extends Context, Ignore, V extends Primitive> = {
     [K in StringPaths<C, Ignore>]:
-    Union.NonNullable<Extract<Object.Path<C, String.Split<K, '.'>>, V>> extends V ? 1 : 0;
+    NonNullable<Extract<Path<C, Split<K, '.'>>, V>> extends V ? 1 : 0;
 };
 
 export type ExtractPropertyPathsOfType<T extends Record<string, 1 | 0>> = {
@@ -106,14 +106,14 @@ export type ExtendedCompareOp<C extends Context, Ignore, V extends Primitive> =
     NinCompareOp<C, Ignore, V> | NumberCompareOps<C, Ignore, V> | StringCompareOps<C, Ignore, V> |
     ExistsCompareOp;
 
-type ExtractPrimitive<T> = Extract<Union.NonNullable<T>, Primitive>;
+type ExtractPrimitive<T> = Extract<NonNullable<T>, Primitive>;
 
 export type PropertyCompareOps<C extends Context, Ignore> = {
     [K in StringPaths<C, Ignore>]:
-    ExtractPrimitive<Object.Path<C, String.Split<K, '.'>>> extends never ?
+    ExtractPrimitive<Path<C, Split<K, '.'>>> extends never ?
         ExistsCompareOp :
-        (Extract<Object.Path<C, String.Split<K, '.'>>, Primitive | undefined> |
-            ExtendedCompareOp<C, Ignore, ExtractPrimitive<Object.Path<C, String.Split<K, '.'>>>>)
+        (Extract<Path<C, Split<K, '.'>>, Primitive | undefined> |
+            ExtendedCompareOp<C, Ignore, ExtractPrimitive<Path<C, Split<K, '.'>>>>)
 };
 
 export interface AndCompareOp<C extends Context, F extends FunctionsTable<C, CustomEvaluatorFuncRunOptions>,
@@ -131,7 +131,7 @@ export interface NotCompareOp<C extends Context, F extends FunctionsTable<C, Cus
     not: Expression<C, F, Ignore, CustomEvaluatorFuncRunOptions>;
 }
 
-export type RequireOnlyOne<T extends object> = Object.Either<T, keyof T>;
+export { RequireOnlyOne };
 
 export type FullExpression<C extends Context, F extends FunctionsTable<C, CustomEvaluatorFuncRunOptions>,
     Ignore, CustomEvaluatorFuncRunOptions> =
@@ -157,7 +157,7 @@ export type FunctionsTable<T, CustomEvaluatorFuncRunOptions> = Record<string, Fu
 
 export type Context = Record<string, any>;
 
-export type ValidationContext<C extends Context, Ignore = never> = NonNullable<C, Ignore>;
+export type ValidationContext<C extends Context, Ignore = never> = NonNullableDeep<C, Ignore>;
 
 export interface EvaluationResult<C extends Context, F extends FunctionsTable<C, CustomEvaluatorFuncRunOptions>,
     Ignore, CustomEvaluatorFuncRunOptions> {

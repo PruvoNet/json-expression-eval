@@ -1,20 +1,23 @@
-import { Any, List, Misc, Union } from 'ts-toolbelt';
-import { NonNullableFlat } from 'ts-toolbelt/out/Object/NonNullable';
+import { BuiltIn, Cast, Keys, List, Primitive } from './utils';
 
 type UnionOf<A> =
-    A extends List.List
+    A extends List
         ? A[number]
-        : Union.Exclude<A[keyof A], undefined>
+        : Exclude<A[keyof A], undefined>
 
-type _PathsRequired<O, P extends List.List, Ignore, K extends Any.Key> = UnionOf<{
+// The accumulated path `[...P, k]` is a tuple of PropertyKeys (never nullable),
+// so wrapping it in a NonNullable helper (as the ts-toolbelt version did) is a
+// no-op — the bare tuple is structurally identical and avoids an instantiation
+// at every path leaf.
+type _PathsRequired<O, P extends List, Ignore, K extends PropertyKey> = UnionOf<{
     [k in keyof O]: k extends K ?
-        O[k] extends Misc.BuiltIn | Misc.Primitive | Ignore ? NonNullableFlat<[...P, k]> :
-            [Any.Keys<O[k]>] extends [never] ? NonNullableFlat<[...P, k]> :
-                12 extends List.Length<P> ? NonNullableFlat<[...P, k]> :
+        O[k] extends BuiltIn | Primitive | Ignore ? [...P, k] :
+            [Keys<O[k]>] extends [never] ? [...P, k] :
+                12 extends P['length'] ? [...P, k] :
                     _PathsRequired<O[k], [...P, k], Ignore, K> : never
 }>
 
-export type Paths<O, P extends List.List = [], Ignore = never, K extends Any.Key = Any.Key> =
+export type Paths<O, P extends List = [], Ignore = never, K extends PropertyKey = PropertyKey> =
     _PathsRequired<O, P, Ignore, K> extends infer X
-        ? Any.Cast<X, List.List<K>>
+        ? Cast<X, List<K>>
         : never

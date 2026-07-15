@@ -1,6 +1,6 @@
 /* eslint-disable prefer-const */
 import { ExpressionParts } from '../../types';
-import { Any, Test } from 'ts-toolbelt';
+import { Compute } from '../../types/utils';
 
 interface ExpressionContext {
     str: string;
@@ -23,7 +23,7 @@ type ExpressionFunction = {
     boolArrFn: (a: boolean[], context: { str: string }) => boolean;
 };
 
-type Result = Any.Compute<ExpressionParts<ExpressionContext, ExpressionFunction, {}, never, {dryRun: boolean}>>;
+type Result = Compute<ExpressionParts<ExpressionContext, ExpressionFunction, {}, never, {dryRun: boolean}>>;
 
 type Expected = {
     'nested.value': {
@@ -100,7 +100,7 @@ declare let e: Expected;
 r = e;
 e = r;
 
-type ResultExtended = Any.Compute<ExpressionParts<ExpressionContext, ExpressionFunction, { description: string }, never,
+type ResultExtended = Compute<ExpressionParts<ExpressionContext, ExpressionFunction, { description: string }, never,
     {dryRun: boolean}>>;
 
 type ExpectedExtended = {
@@ -183,7 +183,8 @@ type ExpectedExtended = {
     },
 };
 
-Test.checks([
-    Test.check<Result, Expected, Test.Pass>(),
-    Test.check<ResultExtended, ExpectedExtended, Test.Pass>(),
-]);
+declare let rExt: ResultExtended;
+declare let eExt: ExpectedExtended;
+
+rExt = eExt;
+eExt = rExt;

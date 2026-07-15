@@ -1,10 +1,8 @@
-import { Any } from 'ts-toolbelt';
-
 export const getFromPath = <O extends object>(obj: O, path: string)
     : { value: any, exists: boolean } => {
     const keys = path.split('.');
     let exists = keys.length > 0;
-    const value = keys.reduce((acc: any, key: Any.Key) => {
+    const value = keys.reduce((acc: any, key: PropertyKey) => {
         const accessible = acc !== null && acc !== undefined;
         exists = exists && accessible && key in acc;
         return accessible ? acc[key] : undefined;

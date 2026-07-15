@@ -18,6 +18,7 @@
   ],
   "exclude": [
     "src/test/types/**/*.test-d.ts",
+    "src/test/benchmark/**",
     "node_modules",
     "dist",
     "vitest.config.ts"
