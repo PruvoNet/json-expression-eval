@@ -9,88 +9,28 @@ on:
       - '**'
   workflow_call:
     secrets:
-      SNYK_TOKEN:
-        required: false
       QLTY_COVERAGE_TOKEN:
         required: false
 
-permissions:
-  contents: read
-
-env:
-  PRIMARY_NODE_VERSION: 24.x
-  PRIMARY_OS: ubuntu-latest
+permissions: {}
 
 jobs:
-  test:
-    name: CI
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [ ubuntu-latest, macos-latest, windows-latest ]
-        node-version: [ 20.x, 22.x, 24.x ]
-
-    steps:
-      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
-        name: Checkout
-        with:
-          ref: ${{ github.event.client_payload.ref || github.ref }}
-          persist-credentials: false
-
-      - name: Install pnpm
-        uses: pnpm/action-setup@fc06bc1257f339d1d5d8b3a19a8cae5388b55320 # v4.4.0
-        with:
-          version: 10
-
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6.5.0
-        with:
-          node-version: ${{ matrix.node-version }}
-          cache: 'pnpm'
-
-      - name: Install dependencies and build
-        run: |
-          pnpm install
-          pnpm build
-
-      - name: Snyk security check
-        if: matrix.node-version == env.PRIMARY_NODE_VERSION && matrix.os == env.PRIMARY_OS
-        uses: snyk/actions/node@9adf32b1121593767fc3c057af55b55db032dc04 # v1.0.0
-        env:
-          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-        with:
-          args: --all-projects
-
-      - name: Run types tests
-        if: matrix.node-version == env.PRIMARY_NODE_VERSION && matrix.os == env.PRIMARY_OS
-        run: |
-          pnpm test:tsd
-
-      - name: Run unit tests with coverage
-        if: matrix.node-version == env.PRIMARY_NODE_VERSION && matrix.os == env.PRIMARY_OS
-        run: pnpm test:cover
-
-      - name: Upload coverage
-        if: matrix.node-version == env.PRIMARY_NODE_VERSION && matrix.os == env.PRIMARY_OS
-        uses: qltysh/qlty-action/coverage@c9b09987143d1e4ac955f4803c7bea742102feb5 # v2.4.0
-        with:
-          token: ${{ secrets.QLTY_COVERAGE_TOKEN }}
-          files: coverage/lcov.info
-
-      - name: Run unit tests
-        if: "!(matrix.node-version == env.PRIMARY_NODE_VERSION && matrix.os == env.PRIMARY_OS)"
-        run: pnpm test:unit
-
-  zizmor:
-    name: Workflow security (zizmor)
-    runs-on: ubuntu-latest
+  ci:
+    uses: PruvoNet/oss-workflows/.github/workflows/ci-node.yml@638c70a621e280086c02bc7dcf4ccca4580d9041 # v1
     permissions:
       contents: read
-    steps:
-      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
-        with:
-          persist-credentials: false
+    with:
+      package-manager: pnpm
+      node-versions: '["20.x", "22.x", "24.x"]'
+      os: '["ubuntu-latest", "macos-latest", "windows-latest"]'
+      build-command: pnpm build
+      test-command: pnpm test:unit
+      coverage-command: pnpm test:tsd && pnpm test:cover
+      qlty: true
+    secrets:
+      QLTY_COVERAGE_TOKEN: ${{ secrets.QLTY_COVERAGE_TOKEN }}
 
-      - uses: zizmorcore/zizmor-action@85b2b9fb8e3325e7a23d7d0a9d7ba5ae0f999e3e # v0.7.1
-        with:
-          advanced-security: false
+  zizmor:
+    uses: PruvoNet/oss-workflows/.github/workflows/zizmor.yml@638c70a621e280086c02bc7dcf4ccca4580d9041 # v1
+    permissions:
+      contents: read
