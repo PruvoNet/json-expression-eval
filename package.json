@@ -42,9 +42,9 @@
   "author": "Regev Brody <regevbr@gmail.com>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/regevbr/json-expression-eval/issues"
+    "url": "https://github.com/PruvoNet/json-expression-eval/issues"
   },
-  "homepage": "https://github.com/regevbr/json-expression-eval#readme",
+  "homepage": "https://github.com/PruvoNet/json-expression-eval#readme",
   "tsd": {
     "directory": "src/test/types"
   },

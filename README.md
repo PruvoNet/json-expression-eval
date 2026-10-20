@@ -8,10 +8,10 @@
 <p align="center">
   <a href="https://www.npmjs.com/package/json-expression-eval"><img src="https://img.shields.io/npm/v/json-expression-eval.svg?style=flat-square" alt="npm version"></a>
   <a href="https://www.npmjs.com/package/json-expression-eval"><img src="https://img.shields.io/node/v-lts/json-expression-eval?style=flat-square" alt="node version"></a>
-  <a href="https://github.com/regevbr/json-expression-eval/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/regevbr/json-expression-eval/ci.yml?branch=master&style=flat-square" alt="build status"></a>
-  <a href="https://qlty.sh/gh/regevbr/projects/json-expression-eval"><img src="https://qlty.sh/gh/regevbr/projects/json-expression-eval/coverage.svg" alt="coverage"></a>
-  <a href="https://qlty.sh/gh/regevbr/projects/json-expression-eval"><img src="https://qlty.sh/gh/regevbr/projects/json-expression-eval/maintainability.svg" alt="maintainability"></a>
-  <a href="https://snyk.io/test/github/regevbr/json-expression-eval?targetFile=package.json"><img src="https://snyk.io/test/github/regevbr/json-expression-eval/badge.svg?targetFile=package.json" alt="vulnerabilities"></a>
+  <a href="https://github.com/PruvoNet/json-expression-eval/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/PruvoNet/json-expression-eval/ci.yml?branch=master&style=flat-square" alt="build status"></a>
+  <a href="https://qlty.sh/gh/PruvoNet/projects/json-expression-eval"><img src="https://qlty.sh/gh/PruvoNet/projects/json-expression-eval/coverage.svg" alt="coverage"></a>
+  <a href="https://qlty.sh/gh/PruvoNet/projects/json-expression-eval"><img src="https://qlty.sh/gh/PruvoNet/projects/json-expression-eval/maintainability.svg" alt="maintainability"></a>
+  <a href="https://snyk.io/test/github/PruvoNet/json-expression-eval?targetFile=package.json"><img src="https://snyk.io/test/github/PruvoNet/json-expression-eval/badge.svg?targetFile=package.json" alt="vulnerabilities"></a>
 </p>
 
 ---
